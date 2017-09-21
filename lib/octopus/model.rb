@@ -30,9 +30,6 @@ If you are trying to scope everything to a specific shard, use Octopus.using ins
       include SharedMethods
 
       def self.included(base)
-        base.send(:alias_method, :equality_without_octopus, :==)
-        base.send(:alias_method, :==, :equality_with_octopus)
-        base.send(:alias_method, :eql?, :==)
         base.send(:alias_method, :perform_validations_without_octopus, :perform_validations)
         base.send(:alias_method, :perform_validations, :perform_validations_with_octopus)
       end
@@ -45,10 +42,6 @@ If you are trying to scope everything to a specific shard, use Octopus.using ins
 
       def should_set_current_shard?
         self.respond_to?(:current_shard) && !current_shard.nil?
-      end
-
-      def equality_with_octopus(comparison_object)
-        equality_without_octopus(comparison_object) && comparison_object.current_shard.to_s == current_shard.to_s
       end
 
       def perform_validations_with_octopus(*args)
